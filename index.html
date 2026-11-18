@@ -1,4 +1,4 @@
-// job safe AI frontend 
+//job safe AI frontend 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -58,26 +58,59 @@ footer{text-align:center;padding:20px;color:#64748b}
 </main>
 <footer>© 2026 JobSafe AI | Think Safe • Apply Smart</footer>
 <script>
-function checkJob(){
-const backendUrl = "https://jobsafe-ai-yic1.onrender.com";
-let d=document.getElementById("description").value.toLowerCase();
-let result=document.getElementById("result");
-if(!d.trim()){
-alert("Please enter job description");
-return;
+async function checkJob() {
+    const description = document.getElementById("description").value.trim();
+    const result = document.getElementById("result");
+
+    if (!description) {
+        alert("Please enter job description");
+        return;
+    }
+
+    result.style.display = "block";
+    result.style.background = "#e8f0fe";
+    result.textContent = "Analyzing job posting...";
+
+    try {
+        const response = await fetch(
+            "https://jobsafe-ai-yic1.onrender.com/predict",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    description: description
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "Analysis failed");
+        }
+
+        result.style.background =
+            data.risk_level === "High" ? "#ffe2e2" : "#e1f7e8";
+
+        const heading = document.createElement("h3");
+        heading.textContent = data.prediction;
+
+        const risk = document.createElement("p");
+        risk.textContent = "Risk Level: " + data.risk_level;
+
+        const disclaimer = document.createElement("p");
+        disclaimer.textContent = data.disclaimer;
+
+        result.replaceChildren(heading, risk, disclaimer);
+
+    } catch (error) {
+        result.style.background = "#ffe2e2";
+        result.textContent = "Connection Error: " + error.message;
+    }
 }
-let flags=["registration fee","training fee","pay money","otp","bank details","urgent hiring","guaranteed salary"];
-let found=flags.filter(x=>d.includes(x));
-result.style.display="block";
-if(found.length){
-result.style.background="#ffe2e2";
-result.innerHTML="<h3>⚠️ Suspicious Job Posting</h3><p>Risk Level: High</p><p>Red Flags: "+found.join(", ")+"</p>";
-}else{
-result.style.background="#e1f7e8";
-result.innerHTML="<h3>Initial Check: Low Risk</h3><p>No listed warning keywords found. This does not guarantee that the job is genuine.</p>";
-}
-}
-</script>
-</body>
-</html>
+  </script>
+  </body>
+  </html>
   
