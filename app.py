@@ -1,53 +1,48 @@
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+import pickle
 
 app = Flask(__name__)
 CORS(app)
 
+# Load trained Machine Learning model
+with open("model.pkl", "rb") as file:
+    model = pickle.load(file)
+
 @app.route("/")
 def home():
     return jsonify({
-        "message": "Welcome to JobSafe AI Backend",
-        "status": "Running"
+        "project": "JobSafe AI",
+        "status": "Running Successfully"
     })
 
 @app.route("/predict", methods=["POST"])
 def predict():
-    data = request.get_json()
+    data = request.get_json(silent=True) or {}
 
-    description = data.get("description", "").lower()
+    description = data.get("description", "").strip()
 
     if not description:
         return jsonify({
-            "error": "Job description is required"
+            "error": "Please enter job description"
         }), 400
 
-    red_flags = [
-        "registration fee",
-        "training fee",
-        "pay money",
-        "bank details",
-        "otp",
-        "urgent hiring",
-        "guaranteed salary"
-    ]
+    prediction = int(model.predict([description])[0])
 
-    found = [word for word in red_flags if word in description]
-
-    if len(found) >= 2:
+    if prediction == 1:
         risk = "High"
-    elif len(found) == 1:
-        risk = "Medium"
+        result = "Suspicious Job"
     else:
         risk = "Low"
+        result = "Likely Genuine Job"
 
     return jsonify({
+        "prediction": result,
         "risk_level": risk,
-        "red_flags": found,
-        "message": "Initial safety screening only. Not a guarantee of job authenticity."
+        "disclaimer": "AI prediction is not a guarantee. Verify the employer independently."
     })
 
 if __name__ == "__main__":
-    app.run(debug=True)
-           
+    app.run()
+    
