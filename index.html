@@ -59,11 +59,11 @@ footer{text-align:center;padding:20px;color:#64748b}
 <footer>© 2026 JobSafe AI | Think Safe • Apply Smart</footer>
 <script>
 function checkJob(){
+const backendUrl = "https://jobsafe-ai-yic1.onrender.com";
 let d=document.getElementById("description").value.toLowerCase();
 let result=document.getElementById("result");
 if(!d.trim()){
 alert("Please enter job description");
-const backendUrl = "https://jobsafe-ai-yic1.onrender.com";
 return;
 }
 let flags=["registration fee","training fee","pay money","otp","bank details","urgent hiring","guaranteed salary"];
