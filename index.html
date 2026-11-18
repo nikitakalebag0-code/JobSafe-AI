@@ -1,0 +1,82 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JobSafe AI</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial;background:#f3f6fc;color:#172554}
+header{background:#102a56;color:white;padding:22px;text-align:center}
+header h1{margin:0}
+nav{padding:15px;text-align:center;background:#fff}
+nav a{margin:10px;color:#174ea6;text-decoration:none;font-weight:bold}
+main{max-width:650px;margin:30px auto;padding:20px}
+.card{background:white;padding:25px;border-radius:15px;box-shadow:0 3px 15px #ccd3df}
+h2{color:#174ea6}
+input,textarea,select{width:100%;padding:13px;margin:10px 0;border:1px solid #ccc;border-radius:8px}
+button{width:100%;padding:14px;background:#1756ad;color:white;border:0;border-radius:8px;font-size:16px}
+#result{margin-top:20px;padding:15px;border-radius:8px;display:none}
+footer{text-align:center;padding:20px;color:#64748b}
+</style>
+</head>
+<body>
+<header>
+<h1>🛡️ JobSafe AI</h1>
+<p>AI-Based Fake Job & Internship Detection System</p>
+</header>
+<nav>
+<a href="#">Home</a>
+<a href="#check">Check Job</a>
+<a href="#about">About</a>
+<a href="#tips">Safety Tips</a>
+</nav>
+<main>
+<div class="card" id="check">
+<h2>Check Your Job Posting</h2>
+<p>Enter job details to check whether a job is suspicious.</p>
+<select id="type">
+<option>Job</option>
+<option>Internship</option>
+</select>
+<input id="company" placeholder="Company Name">
+<textarea id="description" rows="7" placeholder="Paste Job Description Here"></textarea>
+<button onclick="checkJob()">Analyze Job</button>
+<div id="result"></div>
+</div>
+<div class="card" id="about" style="margin-top:20px">
+<h2>About JobSafe AI</h2>
+<p>Our project aims to identify suspicious job and internship postings using Artificial Intelligence and Machine Learning.</p>
+</div>
+<div class="card" id="tips" style="margin-top:20px">
+<h2>Safety Tips</h2>
+<p>• Never pay registration fees for a job.</p>
+<p>• Never share OTP or bank details.</p>
+<p>• Verify company information before applying.</p>
+</div>
+</main>
+<footer>© 2026 JobSafe AI | Think Safe • Apply Smart</footer>
+<script>
+function checkJob(){
+let d=document.getElementById("description").value.toLowerCase();
+let result=document.getElementById("result");
+if(!d.trim()){
+alert("Please enter job description");
+return;
+}
+let flags=["registration fee","training fee","pay money","otp","bank details","urgent hiring","guaranteed salary"];
+let found=flags.filter(x=>d.includes(x));
+result.style.display="block";
+if(found.length){
+result.style.background="#ffe2e2";
+result.innerHTML="<h3>⚠️ Suspicious Job Posting</h3><p>Risk Level: High</p><p>Red Flags: "+found.join(", ")+"</p>";
+}else{
+result.style.background="#e1f7e8";
+result.innerHTML="<h3>Initial Check: Low Risk</h3><p>No listed warning keywords found. This does not guarantee that the job is genuine.</p>";
+}
+}
+</script>
+</body>
+</html>
+  
